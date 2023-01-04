@@ -1,0 +1,92 @@
+version: '3.4'
+
+services:
+
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "1Secure*Password1"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: my-rabbit
+    container_name: rabbitmq
+    environment:
+        - RABBITMQ_DEFAULT_USER=guest
+        - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  envoygateway:
+    build: src/BuildingBlocks/Envoy/
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+      - "10001:10001"
+    volumes:
+      - ./src/BuildingBlocks/Envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./src/BuildingBlocks/Envoy/https.crt:/etc/ssl/certs/https.crt
+      - ./src/BuildingBlocks/Envoy/key.pem:/etc/ssl/certs/key.pem
+
+  communications.api:
+    image: ${DOCKER_REGISTRY-}communicationsapi
+    depends_on:
+     - "rabbitmq"
+    build:
+      context: .
+      dockerfile: src/Services/CommunicationService/Communication.Api/Dockerfile
+
+  trades.api:
+    image: ${DOCKER_REGISTRY-}tradesapi
+    depends_on:
+     - "sqlserver"
+    build:
+      context: .
+      dockerfile: src/Services/TradeService/Api/Dockerfile
+
+
+  refdata.api:
+    image: ${DOCKER_REGISTRY-}refdataapi
+    build:
+      context: .
+      dockerfile: src/Services/RefdataService/RefData.API/Dockerfile
+
+
+  notifications.api:
+    image: ${DOCKER_REGISTRY-}notificationsapi
+    depends_on:
+     - "sqlserver"
+     - "rabbitmq"
+    build:
+      context: .
+      dockerfile: src/Services/NotificationService/Api/Dockerfile
+
+
+  marketdata.api:
+    image: ${DOCKER_REGISTRY-}marketdataapi
+    depends_on:
+      - "redis"
+    build:
+      context: .
+      dockerfile: src/Services/MarketDataService/MarketData.API/Dockerfile
+
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identityapi
+    depends_on:
+     - "sqlserver"
+    build:
+      context: .
+      dockerfile: src/BuildingBlocks/Identity/Identity.API/Dockerfile
+

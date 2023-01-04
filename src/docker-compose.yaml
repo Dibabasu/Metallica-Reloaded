@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  refdataredis:
+    image: redis
+    container_name: ref_data_redis
+    ports:
+      - "6379:6379"
+  envoygateway:
+    build: BuildingBlocks/Envoy/
+    ports:
+      - "9901:9901"
+      - "10000:10000"
+      - "10001:10001"
+    volumes:
+      - ./BuildingBlocks/Envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./BuildingBlocks/Envoy/https.crt:/etc/ssl/certs/https.crt
+      - ./BuildingBlocks/Envoy/key.pem:/etc/ssl/certs/key.pem
+  marketdataapi:
+    build: Services/MarketDataService/MarketData.API
+    depends_on:
+      - "refdataredis"
+    ports:
+      - "8080:80"
+      - "9090:443"
+    links:
+      - "refdataredis"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "9090"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
+  refdataapi:
+    build: Services/RefdataService/RefData.API
+    ports:
+      - "8081:80"
+      - "9091:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "9091"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/
