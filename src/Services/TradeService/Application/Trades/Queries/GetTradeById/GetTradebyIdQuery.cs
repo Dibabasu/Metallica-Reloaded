@@ -9,7 +9,7 @@ namespace Trades.Application.Trades.Queries.GetTradeById
 {
     public class GetTradebyIdQuery : IRequest<TradeDTO>
     {
-        public Guid TradeId { get; set; }
+        public Guid Id { get; set; }
     }
     public class GetTradebyIdQueryHandler : IRequestHandler<GetTradebyIdQuery, TradeDTO>
     {
@@ -24,13 +24,13 @@ namespace Trades.Application.Trades.Queries.GetTradeById
         public async Task<TradeDTO> Handle(GetTradebyIdQuery request, CancellationToken cancellationToken)
         {
             var entity = await _context.Trades
-           .Where(l => l.Id == request.TradeId)
+           .Where(l => l.Id == request.Id)
            .ProjectTo<TradeDTO>(_mapper.ConfigurationProvider)
            .SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Trades), request.TradeId);
+                throw new NotFoundException(nameof(Trades), request.Id);
             }
 
             return entity; 

@@ -33,7 +33,7 @@ namespace Trades.Test.Trades.Queries
 
             var request = new GetTradebyIdQuery
             {
-                TradeId = new Guid("5efae644-1329-42e5-adf9-6b89796171ef")
+                Id = new Guid("5efae644-1329-42e5-adf9-6b89796171ef")
             };
 
 
@@ -59,7 +59,7 @@ namespace Trades.Test.Trades.Queries
 
             var request = new GetTradebyIdQuery
             {
-                TradeId = new Guid("5efae644-1329-42e5-adf9-6e89796171ef")
+                Id = new Guid("5efae644-1329-42e5-adf9-6e89796171ef")
             };
 
 

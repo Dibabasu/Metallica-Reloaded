@@ -11,11 +11,17 @@ namespace Communications.Api.Consumers
         private readonly ILogger<NotificationConsumer> _logger;
         private readonly ICommuncations _communcationsService;
         private readonly IPublisherService _publisherService;
-        public NotificationConsumer(ILogger<NotificationConsumer> logger, ICommuncations iCommuncations, IPublisherService publisherService)
+        private readonly ITradeDetails _tradeDetails;
+        public NotificationConsumer(ILogger<NotificationConsumer> logger, 
+            ICommuncations iCommuncations, 
+            IPublisherService publisherService,
+            ITradeDetails tradeDetails
+            )
         {
             _logger = logger;
             _communcationsService = iCommuncations;
             _publisherService = publisherService;
+            _tradeDetails = tradeDetails;
         }
         public async Task Consume(ConsumeContext<NotificationMessage> context)
         {
@@ -30,7 +36,9 @@ namespace Communications.Api.Consumers
                     TradeId = data.TradeId
                 };
 
-                var noticationStatusMessage = await SendNotifications(notification);
+                var tradeDetails = await GetTradeDetails(data.TradeId);
+
+                var noticationStatusMessage = await SendNotifications(notification,tradeDetails);
 
                 await PublishNotificaitonStatus(noticationStatusMessage);
             }
@@ -40,13 +48,13 @@ namespace Communications.Api.Consumers
                 throw;
             }
         }
-        private async Task<NoticationStatusMessage> SendNotifications(NotificationDetail notificationDetail)
+        private async Task<NoticationStatusMessage> SendNotifications(NotificationDetail notificationDetail, TradeDTO tradeDetails)
         {
             var response = new NoticationStatusMessage();
             response.NotificaitonId = notificationDetail.NotificationId;
             try
             {
-                var EmailStaus = await _communcationsService.SendEmail(notificationDetail);
+                var EmailStaus = await _communcationsService.SendEmail(notificationDetail, tradeDetails);
 
                 response.EmailStatus = (int)EmailStaus.Status;
                 response.NumberOfRetries = EmailStaus.Retries;
@@ -59,7 +67,7 @@ namespace Communications.Api.Consumers
 
             try
             {
-                var SMSStaus = await _communcationsService.SendSMS(notificationDetail);
+                var SMSStaus = await _communcationsService.SendSMS(notificationDetail, tradeDetails);
                 response.SMSStatus = (int)SMSStaus.Status;
             }
             catch (Exception ex)
@@ -72,6 +80,21 @@ namespace Communications.Api.Consumers
         private async Task PublishNotificaitonStatus(NoticationStatusMessage noticationStatusMessage)
         {
             await _publisherService.UpdateNotificaitonStatus(noticationStatusMessage);
+        }
+
+        private async Task<TradeDTO> GetTradeDetails(Guid TradeId)
+        {
+            try
+            {
+                var trade = await _tradeDetails.GetTradeById(TradeId);
+                return trade;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Communications.Api.Exceptions;
 using Communications.Api.Model;
+using Communications.Api.Model.Common;
 using Communications.Api.Services.Interfaces;
 using Polly;
 using Polly.Retry;
@@ -18,7 +19,9 @@ namespace Communications.Api.Services
             _retryPolicy = Policy.Handle<Exception>().RetryAsync(MaxRetries);
         }
 
-        public async Task<EmailResponse> SendEmail(NotificationDetail notificationDetail)
+
+
+        public async Task<EmailResponse> SendEmail(NotificationDetail notificationDetail, TradeDTO trade)
         {
             int retrycount = 0;
             try
@@ -33,7 +36,10 @@ namespace Communications.Api.Services
                         throw new EmailException();
                     }
 
-                    _logger.LogInformation($"A New Email has been sent, Notification Id : {notificationDetail.NotificationId} and Trade Id : {notificationDetail.TradeId} ");
+                    _logger.LogInformation($"A New Email has been sent, Notification Id : {notificationDetail.NotificationId} " +
+                        $"and Trade Id : {notificationDetail.TradeId} " +
+                        $"with TradeDetails : {GetStringTradeDetail(trade)} ");
+
                     return new EmailResponse
                     {
                         EmailSentAt = DateTime.UtcNow,
@@ -56,7 +62,7 @@ namespace Communications.Api.Services
             }
         }
 
-        public async Task<SmsResponse> SendSMS(NotificationDetail notificationDetail)
+        public async Task<SmsResponse> SendSMS(NotificationDetail notificationDetail, TradeDTO trade)
         {
             try
             {
@@ -65,7 +71,9 @@ namespace Communications.Api.Services
                 if (random.Next(1, 5) == 5)
                     throw new SMSException();
 
-                _logger.LogInformation($"A New SMS has been sent, Notification Id : {notificationDetail.NotificationId} and Trade Id : {notificationDetail.TradeId} ");
+                _logger.LogInformation($"A New SMS has been sent, Notification Id : {notificationDetail.NotificationId} " +
+                    $"and Trade Id : {notificationDetail.TradeId} " +
+                    $"with TradeDetails : {GetStringTradeDetail(trade)} ");
 
                 return new SmsResponse
                 {
@@ -81,10 +89,11 @@ namespace Communications.Api.Services
                     Status = NotificaitonStatus.Failed,
                 };
             }
+        }
 
-
-
-
+        private static string GetStringTradeDetail(TradeDTO tradeDetails)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(tradeDetails);
         }
     }
 }

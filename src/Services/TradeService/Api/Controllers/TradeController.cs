@@ -18,10 +18,13 @@ namespace Trades.Api.Controllers
             return await Mediator.Send(query);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<TradeDTO>> GetTradeById([FromQuery] GetTradebyIdQuery query)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TradeDTO>> GetTradeById(Guid id)
         {
-            return await Mediator.Send(query);
+            return await Mediator.Send(new GetTradebyIdQuery
+            {
+                Id = id
+            });
         }
 
         [HttpPost]
