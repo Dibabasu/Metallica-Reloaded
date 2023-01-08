@@ -15,9 +15,9 @@ namespace Notifications.Application.Notifications.Commands.UpdateNotification
 
     public class UpdateNotificationCommandHandler : IRequestHandler<UpdateNotificationCommand>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly INotificationsDbContext _context;
 
-        public UpdateNotificationCommandHandler(IApplicationDbContext context)
+        public UpdateNotificationCommandHandler(INotificationsDbContext context)
         {
             _context = context;
         }

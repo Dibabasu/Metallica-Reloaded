@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Notifications.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class NotificationsDbContext : DbContext, INotificationsDbContext
     {
         public DbSet<Notification> Notifications => Set<Notification>();
 
@@ -14,8 +14,8 @@ namespace Notifications.Infrastructure.Persistence
 
         private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 
-        public ApplicationDbContext(
-            DbContextOptions<ApplicationDbContext> options,
+        public NotificationsDbContext(
+            DbContextOptions<NotificationsDbContext> options,
             AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
             : base(options)
         {

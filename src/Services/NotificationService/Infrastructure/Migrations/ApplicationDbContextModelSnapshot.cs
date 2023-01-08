@@ -10,7 +10,7 @@ using Notifications.Infrastructure.Persistence;
 
 namespace Notifications.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(NotificationsDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -66,38 +66,23 @@ namespace Notifications.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CommoditiesIdentifier")
-                        .IsRequired()
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CounterpartiesIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LocationIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("NotificaitonProccessed")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Side")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TradeDate")
+                    b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TradeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TradeStatus")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

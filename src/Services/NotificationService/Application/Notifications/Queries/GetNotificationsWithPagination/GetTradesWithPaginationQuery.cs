@@ -14,10 +14,10 @@ namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPa
     }
     public class GetTradesWithPaginationQueryHandler : IRequestHandler<GetTradesWithPaginationQuery, PaginatedList<TradeDTO>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly INotificationsDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetTradesWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetTradesWithPaginationQueryHandler(INotificationsDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

@@ -19,6 +19,7 @@ namespace Notifications.Application.Consumer
         }
         public async Task Consume(ConsumeContext<NoticationStatusMessage> context)
         {
+
             try
             {
                 var data = context.Message;
@@ -34,9 +35,9 @@ namespace Notifications.Application.Consumer
                 });
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError(message: "Error while consuming NotificaitonStatusConsumer",ex.Message );
                 throw;
             }
         }
