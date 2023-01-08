@@ -1,4 +1,6 @@
-﻿namespace Communications.Api.Model
+﻿using Communications.Api.Model.Common;
+
+namespace Communications.Api.Model
 {
     public class SmsResponse
     {

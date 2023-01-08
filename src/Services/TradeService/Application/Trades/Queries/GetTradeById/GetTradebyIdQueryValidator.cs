@@ -11,7 +11,7 @@ namespace Trades.Application.Trades.Queries.GetTradeById
     {
         public GetTradebyIdQueryValidator()
         {
-            RuleFor(x => x.TradeId)
+            RuleFor(x => x.Id)
            .NotEmpty().WithMessage("Please enter the TradeId");
         }
     }
