@@ -30,6 +30,7 @@ namespace Notifications.Application
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<NotificaitonStatusConsumer>();
+                x.AddConsumer<TradeConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
                 {
                     config.Host(new Uri(RabbitMQCommon.Rabbitmqhost), h =>
@@ -43,6 +44,13 @@ namespace Notifications.Application
                         ep.PrefetchCount = 16;
 
                         ep.ConfigureConsumer<NotificaitonStatusConsumer>(provider);
+
+                    });
+                    config.ReceiveEndpoint(RabbitMQQueue.TradesEventQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+
+                        ep.ConfigureConsumer<TradeConsumer>(provider);
 
                     });
                 }));

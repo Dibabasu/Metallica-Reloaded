@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EventBus.RabbitMQ.Trades.Notificaitons;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Reflection.Metadata;
 using Trades.Application.Common.Interfaces;
+using Trades.Application.PublishTrades.Interfaces;
 using Trades.Application.Trades.Commands.CreateTrade;
 using Trades.Domain.Entity;
 using Trades.Infrastructure.Persistence;
@@ -12,10 +14,12 @@ namespace Trades.Test.Trades.Commands
     public class CreateTradeCommandHandlerTest
     {
         private readonly Mock<ITradeApplicationDbContext> _mockTradeRepo;
+        private readonly Mock<IPublishTrade> _mockIPublishTrade;
         private readonly Mock<AuditableEntitySaveChangesInterceptor> _auditableEntitySaveChangesInterceptor;
         public CreateTradeCommandHandlerTest()
         {
             _mockTradeRepo = new();
+            _mockIPublishTrade = new();
             _auditableEntitySaveChangesInterceptor = new();
         }
         [Test]
@@ -36,7 +40,9 @@ namespace Trades.Test.Trades.Commands
                 Side = (Domain.Common.Side)2
             };
 
-            var handler = new CreateTradeCommandHandler(_mockTradeRepo.Object);
+            TradesMessage notificationMessage = new();
+
+            var handler = new CreateTradeCommandHandler(_mockTradeRepo.Object, _mockIPublishTrade.Object);
 
             var result = await handler.Handle(command, default);
 

@@ -31,7 +31,7 @@ using (var scope = app.Services.CreateScope())
 {
     try
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<NotificationsDbContext>();
         dbContext.Database.Migrate();
         Console.WriteLine("Database migrated successfully");
     }

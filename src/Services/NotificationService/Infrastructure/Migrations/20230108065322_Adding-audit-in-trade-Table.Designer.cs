@@ -12,8 +12,8 @@ using Notifications.Infrastructure.Persistence;
 namespace Notifications.Infrastructure.Migrations
 {
     [DbContext(typeof(NotificationsDbContext))]
-    [Migration("20220821195316_notificaiton add trade Id in TradeNotication Table")]
-    partial class notificaitonaddtradeIdinTradeNoticationTable
+    [Migration("20230108065322_Adding-audit-in-trade-Table")]
+    partial class AddingauditintradeTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,8 +39,8 @@ namespace Notifications.Infrastructure.Migrations
                     b.Property<int>("EmailRetries")
                         .HasColumnType("int");
 
-                    b.Property<bool>("EmailSent")
-                        .HasColumnType("bit");
+                    b.Property<int>("EmailStatus")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -48,24 +48,16 @@ namespace Notifications.Infrastructure.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SMSRetries")
+                    b.Property<int>("SMSStatus")
                         .HasColumnType("int");
 
-                    b.Property<bool>("SMSSent")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("SentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("TradeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TradeNotificationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TradeNotificationId");
 
                     b.ToTable("Notifications");
                 });
@@ -76,50 +68,27 @@ namespace Notifications.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CommoditiesIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CounterpartiesIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LocationIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Side")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TradeDate")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TradeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("TradeStatus")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("TradeNotifications");
-                });
-
-            modelBuilder.Entity("Notifications.Domain.Entity.Notification", b =>
-                {
-                    b.HasOne("Notifications.Domain.Entity.TradeNotification", "TradeNotification")
-                        .WithMany()
-                        .HasForeignKey("TradeNotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TradeNotification");
                 });
 #pragma warning restore 612, 618
         }

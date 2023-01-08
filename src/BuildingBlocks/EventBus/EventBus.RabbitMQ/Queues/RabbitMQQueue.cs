@@ -4,5 +4,6 @@
     {
         public const string NotificationsEventQueue = "notificationsEventQueue";
         public const string NotificationsUpdateEventQueue = "notificationsUpdateEventQueue";
+        public const string TradesEventQueue = "tradesUpdateEventQueue";
     }
 }

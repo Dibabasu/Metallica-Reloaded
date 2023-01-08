@@ -1,6 +1,7 @@
 ﻿using EventBus.RabbitMQ.Notifications.Communications;
 using MassTransit;
 using MediatR;
+using Notifications.Application.Common.Exceptions;
 using Notifications.Application.Common.Interfaces;
 using Notifications.Application.Notifications.Commands.UpdateNotification;
 using Notifications.Application.PublishCommuncaitons.Interfaces;
@@ -16,12 +17,12 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
     }
     public class CreateNotificaitonHandler : IRequestHandler<CreateNotificaitonCommand, Guid>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly INotificationsDbContext _context;
         private readonly IPublishNotification _publishNotification;
         private readonly IMediator _mediator;
 
 
-        public CreateNotificaitonHandler(IApplicationDbContext context, IBus bus, IMediator mediator, IPublishNotification publishNotification)
+        public CreateNotificaitonHandler(INotificationsDbContext context, IBus bus, IMediator mediator, IPublishNotification publishNotification)
         {
             _context = context;
             _mediator = mediator;
@@ -29,6 +30,15 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
         }
         public async Task<Guid> Handle(CreateNotificaitonCommand request, CancellationToken cancellationToken)
         {
+            var data = _context.TradeNotifications
+                .Where(d => d.TradeId == request.TradeId && d.IsActive == true)
+                .Any();
+
+            if (!data)
+            {
+                throw new NotFoundException("TradeId", request.TradeId);
+            }
+
             var entity = new Notification
             {
                 EmailRetries = 0,

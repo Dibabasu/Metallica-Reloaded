@@ -11,7 +11,7 @@ using Notifications.Infrastructure.Persistence;
 
 namespace Notifications.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(NotificationsDbContext))]
     [Migration("20221204085525_initaialdocker")]
     partial class initaialdocker
     {

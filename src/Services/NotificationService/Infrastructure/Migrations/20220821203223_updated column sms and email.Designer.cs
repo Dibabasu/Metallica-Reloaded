@@ -11,7 +11,7 @@ using Notifications.Infrastructure.Persistence;
 
 namespace Notifications.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(NotificationsDbContext))]
     [Migration("20220821203223_updated column sms and email")]
     partial class updatedcolumnsmsandemail
     {

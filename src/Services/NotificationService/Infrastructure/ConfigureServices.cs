@@ -15,11 +15,11 @@ namespace Notifications.Infrastructure
             services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<NotificationsDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("AppDbContext"),
-                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    builder => builder.MigrationsAssembly(typeof(NotificationsDbContext).Assembly.FullName)));
 
-            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+            services.AddScoped<INotificationsDbContext>(provider => provider.GetRequiredService<NotificationsDbContext>());
 
             services.AddTransient<IDateTime, DateTimeService>();
 
