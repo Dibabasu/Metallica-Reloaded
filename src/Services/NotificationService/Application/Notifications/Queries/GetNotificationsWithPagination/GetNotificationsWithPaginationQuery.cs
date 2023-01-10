@@ -7,12 +7,12 @@ using Notifications.Application.Common.Models;
 
 namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPagination
 {
-    public class GetTradesWithPaginationQuery : IRequest<PaginatedList<TradeDTO>>
+    public class GetNotificationsWithPaginationQuery : IRequest<PaginatedList<NotificationDTO>>
     {
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 10;
     }
-    public class GetTradesWithPaginationQueryHandler : IRequestHandler<GetTradesWithPaginationQuery, PaginatedList<TradeDTO>>
+    public class GetTradesWithPaginationQueryHandler : IRequestHandler<GetNotificationsWithPaginationQuery, PaginatedList<NotificationDTO>>
     {
         private readonly INotificationsDbContext _context;
         private readonly IMapper _mapper;
@@ -22,12 +22,12 @@ namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPa
             _context = context;
             _mapper = mapper;
         }
-        public async Task<PaginatedList<TradeDTO>> Handle(GetTradesWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<NotificationDTO>> Handle(GetNotificationsWithPaginationQuery request, CancellationToken cancellationToken)
         {
 
             return await
                 _context.Notifications
-                .ProjectTo<TradeDTO>(_mapper.ConfigurationProvider)
+                .ProjectTo<NotificationDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(request.PageNumber, request.PageSize);
         }
     }

@@ -4,6 +4,7 @@ namespace Communications.Api.Model
 {
     public class TradeDTO
     {
+        public Guid TradeId { get; set; }
         public Side Side { get; set; }
         public TradeStatus TradeStatus { get; set; }
         public int Quantity { get; set; }

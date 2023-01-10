@@ -7,6 +7,7 @@ namespace Trades.Application.Trades.Queries
 {
     public class TradeDTO : IMapFrom<Trade>
     {
+        public Guid TradeId { get; set; }
         public Side Side { get; set; }
         public TradeStatus TradeStatus { get; set; }
         public int Quantity { get; set; }
@@ -22,7 +23,8 @@ namespace Trades.Application.Trades.Queries
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Trade, TradeDTO>();
+            profile.CreateMap<Trade, TradeDTO>()
+                .ForMember(d => d.TradeId, opt => opt.MapFrom(s => s.Id));
         }
     }
 }

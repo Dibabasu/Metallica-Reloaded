@@ -2,6 +2,7 @@
 using Communications.Api.Model;
 using Communications.Api.Services.Interfaces;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace Communications.Api.Services
 {
@@ -9,41 +10,39 @@ namespace Communications.Api.Services
     {
         private readonly ILogger<TradeDetailsService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public TradeDetailsService(ILogger<TradeDetailsService> logger, IConfiguration configuration)
+
+        public TradeDetailsService(ILogger<TradeDetailsService> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
-            _logger=logger;
+            _logger = logger;
             _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
         }
         public async Task<TradeDTO> GetTradeById(Guid TradeId)
         {
             try
             {
-                using (var client = new HttpClient())
+                var client = _httpClientFactory.CreateClient();
+                client.BaseAddress=new Uri(_configuration.GetValue<string>("TradeApiURI"));
+                var response = await client.GetAsync(string.Format("/api/trade/{0}", TradeId));
+                if (response.IsSuccessStatusCode)
                 {
-                 
-                    client.BaseAddress = new Uri(_configuration.GetValue<string>("TradeApiURI"));
-                    var response = await client.GetAsync(string.Format("/{0}", TradeId));
-                    if (response.IsSuccessStatusCode)
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    if (result != null)
                     {
-                        var result = response.Content.ReadAsStringAsync().Result;
-                        if (result != null)
-                        {
-                            var jsonString = await response.Content.ReadAsStringAsync();
-                            return JsonConvert.DeserializeObject<TradeDTO>(jsonString);
-                        }
-                        
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        return JsonConvert.DeserializeObject<TradeDTO>(jsonString);
                     }
-                    throw new NotFoundException(nameof(Services), TradeId);
                 }
-
+                throw new NotFoundException(nameof(Services), TradeId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(message: $"Error while Getting TradeById : {TradeId}");
+                _logger.LogError(message: $"Error while Getting TradeById : {TradeId}, error : {ex.Message}");
                 throw;
             }
-            
+
         }
     }
 }

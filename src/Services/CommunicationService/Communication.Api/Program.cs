@@ -33,6 +33,8 @@ builder.Services.AddMassTransit(x =>
     }));
 });
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<ICommuncations, CommunicationsService>();
 builder.Services.AddScoped<ITradeDetails, TradeDetailsService>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
