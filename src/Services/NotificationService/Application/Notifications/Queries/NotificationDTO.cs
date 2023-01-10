@@ -3,9 +3,9 @@ using Notifications.Application.Common.Mappings;
 using Notifications.Domain.Common;
 using Notifications.Domain.Entity;
 
-namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPagination
+namespace Notifications.Application.Notifications.Queries
 {
-    public class TradeDTO : IMapFrom<Notification>
+    public class NotificationDTO : IMapFrom<Notification>
     {
         public Side Side { get; set; }
         public TradeStatus TradeStatus { get; set; }
@@ -22,7 +22,7 @@ namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPa
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Notification, TradeDTO>();
+            profile.CreateMap<Notification, NotificationDTO>();
         }
     }
 }

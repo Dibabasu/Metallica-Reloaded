@@ -2,9 +2,9 @@
 
 namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPagination
 {
-    public class GetTradesWithPaginationQueryValidator : AbstractValidator<GetTradesWithPaginationQuery>
+    public class GetNotificationsWithPaginationQueryValidator : AbstractValidator<GetNotificationsWithPaginationQuery>
     {
-        public GetTradesWithPaginationQueryValidator()
+        public GetNotificationsWithPaginationQueryValidator()
         {
             RuleFor(x => x.PageNumber)
             .GreaterThanOrEqualTo(1).WithMessage("PageNumber at least greater than or equal to 1.");

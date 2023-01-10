@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notifications.Application.Notifications.Commands.CreateNotification;
 using Notifications.Application.Notifications.Commands.UpdateNotification;
+using Notifications.Application.Notifications.Queries;
 
 namespace Notifications.Api.Controllers
 {
@@ -11,6 +12,18 @@ namespace Notifications.Api.Controllers
 
         [HttpPost("save")]
         public async Task<ActionResult<Guid>> Create(CreateNotificaitonCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Guid>> GetNotificationByID(CreateNotificaitonCommand command)
+        {
+            return await Mediator.Send(command);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Guid>> GetNotificationWithPagination(CreateNotificaitonCommand command)
         {
             return await Mediator.Send(command);
         }
