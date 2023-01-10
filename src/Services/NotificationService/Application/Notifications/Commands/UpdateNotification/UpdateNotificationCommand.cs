@@ -35,6 +35,10 @@ namespace Notifications.Application.Notifications.Commands.UpdateNotification
             entity.EmailStatus = request.EmailStatus;
             entity.SMSStatus = request.SMSStatus;
             entity.EmailRetries = request.NumberOfRetries;
+            if (entity.EmailStatus == NotificaitonStatus.Sent)
+            {
+                entity.SentDate = DateTime.UtcNow;
+            }
             await _context.SaveChangesAsync(cancellationToken);
 
             return Unit.Value;
