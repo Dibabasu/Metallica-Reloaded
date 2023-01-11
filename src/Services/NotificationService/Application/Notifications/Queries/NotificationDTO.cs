@@ -7,22 +7,17 @@ namespace Notifications.Application.Notifications.Queries
 {
     public class NotificationDTO : IMapFrom<Notification>
     {
-        public Side Side { get; set; }
-        public TradeStatus TradeStatus { get; set; }
-        public int Quantity { get; set; }
-        public double Price { get; set; }
-
-        public DateTime TradeDate { get; set; }
-
-        public string CommoditiesIdentifier { get; set; }
-
-        public string CounterpartiesIdentifier { get; set; }
-
-        public string LocationIdentifier { get; set; }
+        public Guid NotificationId { get; set; }
+        public Guid TradeId { get; set; }
+        public NotificaitonStatus SMSStatus { get; set; }
+        public NotificaitonStatus EmailStatus { get; set; }
+        public int EmailRetries { get; set; }
+        public DateTime SentDate { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Notification, NotificationDTO>();
+            profile.CreateMap<Notification, NotificationDTO>()
+                .ForMember(d => d.NotificationId, opt => opt.MapFrom(s => s.Id)); ;
         }
     }
 }

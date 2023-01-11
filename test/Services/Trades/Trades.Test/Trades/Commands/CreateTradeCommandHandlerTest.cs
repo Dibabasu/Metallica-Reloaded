@@ -1,13 +1,10 @@
 ﻿using EventBus.RabbitMQ.Trades.Notificaitons;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System.Reflection.Metadata;
 using Trades.Application.Common.Interfaces;
 using Trades.Application.PublishTrades.Interfaces;
 using Trades.Application.Trades.Commands.CreateTrade;
 using Trades.Domain.Entity;
-using Trades.Infrastructure.Persistence;
-using Trades.Infrastructure.Persistence.Interceptors;
 
 namespace Trades.Test.Trades.Commands
 {
@@ -15,21 +12,19 @@ namespace Trades.Test.Trades.Commands
     {
         private readonly Mock<ITradeApplicationDbContext> _mockTradeRepo;
         private readonly Mock<IPublishTrade> _mockIPublishTrade;
-        private readonly Mock<AuditableEntitySaveChangesInterceptor> _auditableEntitySaveChangesInterceptor;
+       
+
+
         public CreateTradeCommandHandlerTest()
         {
             _mockTradeRepo = new();
             _mockIPublishTrade = new();
-            _auditableEntitySaveChangesInterceptor = new();
         }
         [Test]
         public async Task Handle_ShouldReturnSuccessResult()
         {
             var mockSet = new Mock<DbSet<Trade>>();
-
             _mockTradeRepo.Setup(m => m.Trades).Returns(mockSet.Object);
-
-
             var command = new CreateTradeCommand
             {
                 CommoditiesIdentifier = "AU",
@@ -39,16 +34,14 @@ namespace Trades.Test.Trades.Commands
                 Quantity = 100,
                 Side = (Domain.Common.Side)2
             };
-
-            TradesMessage notificationMessage = new();
-
+            TradesMessage notificationMessage = It.IsAny<TradesMessage>();
             var handler = new CreateTradeCommandHandler(_mockTradeRepo.Object, _mockIPublishTrade.Object);
 
             var result = await handler.Handle(command, default);
 
             mockSet.Verify(m => m.Add(It.IsAny<Trade>()), Times.Once());
             _mockTradeRepo.Verify(m => m.SaveChangesAsync(default), Times.Once());
-
+            _mockIPublishTrade.Verify(m=>m.CreatePublishTrade(It.IsAny<TradesMessage>()), Times.Once());
         }
         [Test]
         public async Task Handle_ShouldRequireMinimumFields()

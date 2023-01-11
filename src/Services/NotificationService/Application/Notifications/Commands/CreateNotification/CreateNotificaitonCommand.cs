@@ -30,13 +30,14 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
         }
         public async Task<Guid> Handle(CreateNotificaitonCommand request, CancellationToken cancellationToken)
         {
-            var data = _context.TradeNotifications
-                .Where(d => d.TradeId == request.TradeId && d.IsActive == true)
-                .Any();
-
-            if (!data)
+            if (!CheckTradeExists(request.TradeId))
             {
                 throw new NotFoundException("TradeId", request.TradeId);
+            }
+
+            if (!UniqueTradeCheck(request.TradeId))
+            {
+                throw new DuplicateFoundException("TradeId", request.TradeId);
             }
 
             var entity = new Notification
@@ -66,5 +67,15 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
 
             return entity.Id;
         }
+
+        private bool CheckTradeExists(Guid tradeId)
+        {
+            return _context.TradeNotifications
+                .Where(d => d.TradeId == tradeId && d.IsActive == true)
+                .Any();
+        }
+        private bool UniqueTradeCheck(Guid tradeId) => _context.Notifications
+                .Where(d => d.TradeId == tradeId)
+                .Any();
     }
 }

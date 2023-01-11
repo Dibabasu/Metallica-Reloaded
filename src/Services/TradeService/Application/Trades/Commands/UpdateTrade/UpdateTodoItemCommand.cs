@@ -8,9 +8,7 @@ namespace Trades.Application.Trades.Commands.UpdateTrade
     public record UpdateTradeStausCommand : IRequest
     {
         public Guid Id { get; init; }
-
         public TradeStatus TradeStatus { get; init; }
-
         public bool Done { get; init; }
     }
 
