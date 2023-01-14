@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Notifications.Application.Common.Models;
 using Notifications.Application.Notifications.Commands.CreateNotification;
+using Notifications.Application.Notifications.Commands.DeleteNotification;
 using Notifications.Application.Notifications.Commands.UpdateNotification;
 using Notifications.Application.Notifications.Queries;
 using Notifications.Application.Notifications.Queries.GetNotificationById;
@@ -43,6 +44,17 @@ namespace Notifications.Api.Controllers
                 return BadRequest();
             }
 
+            await Mediator.Send(command);
+
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            var command = new DeleteNotificationCommand
+            {
+                Id = id
+            };
             await Mediator.Send(command);
 
             return NoContent();

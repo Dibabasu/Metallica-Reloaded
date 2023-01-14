@@ -7,16 +7,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/Services/Communication/Communication.Api/Communication.Api.csproj", "src/Services/Communication/Communication.Api/"]
-RUN dotnet restore "src/Services/Communication/Communication.Api/Communication.Api.csproj"
+COPY ["src/Services/CommunicationService/Communication.Api/Communications.Api.csproj", "src/Services/CommunicationService/Communication.Api/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj", "src/BuildingBlocks/EventBus/EventBus.RabbitMQ/"]
+RUN dotnet restore "src/Services/CommunicationService/Communication.Api/Communications.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Services/Communication/Communication.Api"
-RUN dotnet build "Communication.Api.csproj" -c Release -o /app/build
+WORKDIR "/src/src/Services/CommunicationService/Communication.Api"
+RUN dotnet build "Communications.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Communication.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Communications.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Communication.Api.dll"]
+ENTRYPOINT ["dotnet", "Communications.Api.dll"]

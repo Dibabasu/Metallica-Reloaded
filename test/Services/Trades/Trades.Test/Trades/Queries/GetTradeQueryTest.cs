@@ -1,34 +1,25 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 using Trades.Application.Common.Interfaces;
-using Trades.Application.Common.Mappings;
 using Trades.Application.Trades.Queries;
 using Trades.Application.Trades.Queries.GetTradesWithPagination;
-using Trades.Domain.Common;
 using Trades.Domain.Entity;
 using Trades.Test.Mocks;
-using static TestDbAsyncQueryProvider<Trades.Domain.Entity.Trade>;
 
 namespace Trades.Test.Trades.Queries
 {
+    [TestFixture]
     public class GetTradeQueryTest
     {
       
-        private readonly Mock<ITradeApplicationDbContext> _mockTradeRepo;
-
-        public GetTradeQueryTest()
+        private  Mock<ITradeApplicationDbContext> _mockTradeRepo;
+        [SetUp]
+        public void Setup()
         {
-            _mockTradeRepo = new();
+            _mockTradeRepo = new Mock<ITradeApplicationDbContext>();
         }
+
         [Test]
         public async Task ShouldReturnAll_Trades()
         {

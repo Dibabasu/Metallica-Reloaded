@@ -12,12 +12,12 @@ namespace Notifications.Application.Notifications.Queries.GetNotificationsWithPa
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 10;
     }
-    public class GetTradesWithPaginationQueryHandler : IRequestHandler<GetNotificationsWithPaginationQuery, PaginatedList<NotificationDTO>>
+    public class GetNotificationsWithPaginationQueryHandler : IRequestHandler<GetNotificationsWithPaginationQuery, PaginatedList<NotificationDTO>>
     {
         private readonly INotificationsDbContext _context;
         private readonly IMapper _mapper;
 
-        public GetTradesWithPaginationQueryHandler(INotificationsDbContext context, IMapper mapper)
+        public GetNotificationsWithPaginationQueryHandler(INotificationsDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

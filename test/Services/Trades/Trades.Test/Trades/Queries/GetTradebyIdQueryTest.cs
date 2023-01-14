@@ -3,7 +3,6 @@ using MockQueryable.Moq;
 using Moq;
 using Trades.Application.Common.Exceptions;
 using Trades.Application.Common.Interfaces;
-using Trades.Application.Trades.Commands.CreateTrade;
 using Trades.Application.Trades.Queries;
 using Trades.Application.Trades.Queries.GetTradeById;
 using Trades.Domain.Entity;
@@ -11,18 +10,22 @@ using Trades.Test.Mocks;
 
 namespace Trades.Test.Trades.Queries
 {
+    [TestFixture]
     internal class GetTradebyIdQueryTest
     {
-        private readonly Mock<ITradeApplicationDbContext> _mockTradeRepo;
-        public GetTradebyIdQueryTest()
+        private  Mock<ITradeApplicationDbContext> _mockTradeRepo;
+
+        [SetUp]
+        public void Setup()
         {
             _mockTradeRepo = new Mock<ITradeApplicationDbContext>();
         }
+      
         [Test]
         public async Task ShouldReturnTradewhenFound_Trades()
         {
             IQueryable<Trade> data = MockTradeData.MockQueryableTradeData();
-
+            
             _mockTradeRepo.Setup(c => c.Trades).Returns(data.AsQueryable().BuildMockDbSet().Object);
 
             var mapper = new Mock<IMapper>();
@@ -45,10 +48,11 @@ namespace Trades.Test.Trades.Queries
         }
 
         [Test]
-        public async Task ShouldReturnNotFoundExceptionWhenNotFound_Trades()
+        public void ShouldReturnNotFoundExceptionWhenNotFound_Trades()
         {
-            IQueryable<Trade> data = MockTradeData.MockQueryableTradeData();
 
+            IQueryable<Trade> data = MockTradeData.MockQueryableTradeData();
+            
             _mockTradeRepo.Setup(c => c.Trades).Returns(data.AsQueryable().BuildMockDbSet().Object);
 
             var mapper = new Mock<IMapper>();
@@ -62,11 +66,9 @@ namespace Trades.Test.Trades.Queries
                 Id = new Guid("5efae644-1329-42e5-adf9-6e89796171ef")
             };
 
-
             var service = new GetTradebyIdQueryHandler(_mockTradeRepo.Object, mapper.Object);
-            //  var trades = await service.Handle(request, default);
 
-            Assert.That(() => service.Handle(request, default), 
+            Assert.That(() => service.Handle(request, default),
                 Throws.InstanceOf<NotFoundException>());
         }
         [Test]

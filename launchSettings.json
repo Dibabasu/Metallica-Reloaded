@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "communications.api": "StartDebugging",
+        "envoygateway": "StartWithoutDebugging",
+        "identity.api": "StartDebugging",
+        "marketdata.api": "StartDebugging",
+        "notifications.api": "StartDebugging",
+        "rabbitmq": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging",
+        "refdata.api": "StartDebugging",
+        "sqlserver": "StartWithoutDebugging",
+        "trades.api": "StartDebugging"
+      }
+    }
+  }
+}
