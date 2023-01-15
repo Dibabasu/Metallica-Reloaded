@@ -31,6 +31,7 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
         public async Task<Guid> Handle(CreateNotificaitonCommand request, CancellationToken cancellationToken)
         {
             if (!CheckTradeExists(request.TradeId))
+            if (!CheckTradeExists(request.TradeId))
             {
                 throw new NotFoundException("TradeId", request.TradeId);
             }
@@ -66,20 +67,6 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
             }, cancellationToken);
 
             return entity.Id;
-        }
-
-        private bool CheckTradeExists(Guid tradeId)
-        {
-            return _context.TradeNotifications
-                .Where(d => d.TradeId == tradeId && d.IsActive == true)
-                .Any();
-        }
-        private bool DuplicateTradeCheck(Guid tradeId)
-        {
-            return _context.Notifications
-                .Where(d => d.TradeId == tradeId)
-                .Any();
-            
         }
     }
 }

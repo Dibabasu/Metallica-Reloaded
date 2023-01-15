@@ -11,6 +11,7 @@ namespace Trades.Test.Trades.Commands
     [TestFixture]
     public class CreateTradeCommandHandlerTest
     {
+
         private  Mock<ITradeApplicationDbContext> _mockTradeRepo;
         private  Mock<IPublishTrade> _mockIPublishTrade;
 
@@ -20,6 +21,7 @@ namespace Trades.Test.Trades.Commands
         {
             _mockTradeRepo = new Mock<ITradeApplicationDbContext>();
             _mockIPublishTrade = new Mock<IPublishTrade>();
+
         }
      
         [Test]
