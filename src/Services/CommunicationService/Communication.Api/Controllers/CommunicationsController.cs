@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Communications.Api.Model;
+using Communications.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Communications.Api.Controllers
 {
@@ -6,17 +8,42 @@ namespace Communications.Api.Controllers
     [Route("[controller]")]
     public class CommunicationsController : ControllerBase
     {
-        [HttpPost]
-        [Route("Email")]
-        public IActionResult Email()
+        private readonly IRetryCommunication _retryCommunication;
+        public CommunicationsController(IRetryCommunication retryCommunication)
         {
-            return Ok("Successful Queued");
+            _retryCommunication = retryCommunication;
         }
         [HttpPost]
-        [Route("SMS")]
-        public IActionResult SMS()
+        [Route("Email")]
+        public async Task<IActionResult> Email(Guid notificationId)
         {
-            return Ok("Successful Queued");
+            try
+            {
+                var emailResponse = await _retryCommunication.RetryEmail(notificationId);
+                return Ok(emailResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpPost]
+        [Route("SMS")]
+        public async Task<IActionResult> SMS(Guid notificationId)
+        {
+
+            try
+            {
+                var smsResponse = await _retryCommunication.RetrySMS(notificationId);
+                return Ok(smsResponse);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }

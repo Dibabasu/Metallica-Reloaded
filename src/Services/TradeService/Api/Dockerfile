@@ -7,13 +7,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/Services/Trade/Api/Trades.Api.csproj", "src/Services/Trade/Api/"]
-COPY ["src/Services/Trade/Application/Trades.Application.csproj", "src/Services/Trade/Application/"]
-COPY ["src/Services/Trade/Domain/Trades.Domain.csproj", "src/Services/Trade/Domain/"]
-COPY ["src/Services/Trade/Infrastructure/Trades.Infrastructure.csproj", "src/Services/Trade/Infrastructure/"]
-RUN dotnet restore "src/Services/Trade/Api/Trades.Api.csproj"
+COPY ["src/Services/TradeService/Api/Trades.Api.csproj", "src/Services/TradeService/Api/"]
+COPY ["src/Services/TradeService/Application/Trades.Application.csproj", "src/Services/TradeService/Application/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj", "src/BuildingBlocks/EventBus/EventBus.RabbitMQ/"]
+COPY ["src/Services/TradeService/Domain/Trades.Domain.csproj", "src/Services/TradeService/Domain/"]
+COPY ["src/Services/TradeService/Infrastructure/Trades.Infrastructure.csproj", "src/Services/TradeService/Infrastructure/"]
+RUN dotnet restore "src/Services/TradeService/Api/Trades.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Services/Trade/Api"
+WORKDIR "/src/src/Services/TradeService/Api"
 RUN dotnet build "Trades.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -51,8 +51,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommunicationService", "Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communications.Api", "src\Services\CommunicationService\Communication.Api\Communications.Api.csproj", "{4DD21EE5-63E5-488D-AEAB-A357425B1472}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{022E4884-62E2-4F69-BA12-ED4ED9CC565A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{4CF3B607-2EDD-47A7-97F3-B538AD534E95}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.API", "src\BuildingBlocks\Identity\Identity.API\Identity.API.csproj", "{EF15EC2C-A7B8-4C32-9E15-E4F82C5BC315}"
@@ -61,7 +59,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{D222E242-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{274931E9-9BFF-41D9-A3BB-696DE49DDDAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trades.Test", "test\Services\Trades\Trades.Test\Trades.Test.csproj", "{0763B56A-DEEF-4127-90A4-D672ACF8897D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trades.Test", "test\Services\Trades\Trades.Test\Trades.Test.csproj", "{0763B56A-DEEF-4127-90A4-D672ACF8897D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notifications.Test", "test\Services\Notifications.Test\Notifications.Test.csproj", "{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E0D518F3-0FE1-4FA9-81C9-193DFE8E37B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,10 +119,6 @@ Global
 		{4DD21EE5-63E5-488D-AEAB-A357425B1472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DD21EE5-63E5-488D-AEAB-A357425B1472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DD21EE5-63E5-488D-AEAB-A357425B1472}.Release|Any CPU.Build.0 = Release|Any CPU
-		{022E4884-62E2-4F69-BA12-ED4ED9CC565A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{022E4884-62E2-4F69-BA12-ED4ED9CC565A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{022E4884-62E2-4F69-BA12-ED4ED9CC565A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{022E4884-62E2-4F69-BA12-ED4ED9CC565A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF15EC2C-A7B8-4C32-9E15-E4F82C5BC315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EF15EC2C-A7B8-4C32-9E15-E4F82C5BC315}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF15EC2C-A7B8-4C32-9E15-E4F82C5BC315}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -129,6 +127,14 @@ Global
 		{0763B56A-DEEF-4127-90A4-D672ACF8897D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0763B56A-DEEF-4127-90A4-D672ACF8897D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0763B56A-DEEF-4127-90A4-D672ACF8897D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D518F3-0FE1-4FA9-81C9-193DFE8E37B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D518F3-0FE1-4FA9-81C9-193DFE8E37B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D518F3-0FE1-4FA9-81C9-193DFE8E37B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D518F3-0FE1-4FA9-81C9-193DFE8E37B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +165,7 @@ Global
 		{EF15EC2C-A7B8-4C32-9E15-E4F82C5BC315} = {4CF3B607-2EDD-47A7-97F3-B538AD534E95}
 		{274931E9-9BFF-41D9-A3BB-696DE49DDDAA} = {D222E242-6965-48E2-B408-7714DB4779BC}
 		{0763B56A-DEEF-4127-90A4-D672ACF8897D} = {274931E9-9BFF-41D9-A3BB-696DE49DDDAA}
+		{9D0292D4-E8DD-4AED-8B40-3AD27C3CE372} = {274931E9-9BFF-41D9-A3BB-696DE49DDDAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A7F9413-9CE9-46B7-8534-A70998302F00}

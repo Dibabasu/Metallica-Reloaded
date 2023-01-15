@@ -22,7 +22,7 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
         private readonly IMediator _mediator;
 
 
-        public CreateNotificaitonHandler(INotificationsDbContext context, IBus bus, IMediator mediator, IPublishNotification publishNotification)
+        public CreateNotificaitonHandler(INotificationsDbContext context, IMediator mediator, IPublishNotification publishNotification)
         {
             _context = context;
             _mediator = mediator;
@@ -31,11 +31,12 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
         public async Task<Guid> Handle(CreateNotificaitonCommand request, CancellationToken cancellationToken)
         {
             if (!CheckTradeExists(request.TradeId))
+            if (!CheckTradeExists(request.TradeId))
             {
                 throw new NotFoundException("TradeId", request.TradeId);
             }
 
-            if (!UniqueTradeCheck(request.TradeId))
+            if (DuplicateTradeCheck(request.TradeId))
             {
                 throw new DuplicateFoundException("TradeId", request.TradeId);
             }
@@ -67,15 +68,5 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
 
             return entity.Id;
         }
-
-        private bool CheckTradeExists(Guid tradeId)
-        {
-            return _context.TradeNotifications
-                .Where(d => d.TradeId == tradeId && d.IsActive == true)
-                .Any();
-        }
-        private bool UniqueTradeCheck(Guid tradeId) => _context.Notifications
-                .Where(d => d.TradeId == tradeId)
-                .Any();
     }
 }

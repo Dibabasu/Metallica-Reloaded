@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Trades.Application.Common.Exceptions;
 using Trades.Application.Common.Interfaces;
 using Trades.Domain.Common;
@@ -12,11 +13,11 @@ namespace Trades.Application.Trades.Commands.UpdateTrade
         public bool Done { get; init; }
     }
 
-    public class UpdateTodoItemCommandHandler : IRequestHandler<UpdateTradeStausCommand>
+    public class UpdateTradeCommandHandler : IRequestHandler<UpdateTradeStausCommand>
     {
         private readonly ITradeApplicationDbContext _context;
 
-        public UpdateTodoItemCommandHandler(ITradeApplicationDbContext context)
+        public UpdateTradeCommandHandler(ITradeApplicationDbContext context)
         {
             _context = context;
         }
@@ -24,7 +25,8 @@ namespace Trades.Application.Trades.Commands.UpdateTrade
         public async Task<Unit> Handle(UpdateTradeStausCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Trades
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            .Where(l => l.Id == request.Id)
+            .SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null)
             {

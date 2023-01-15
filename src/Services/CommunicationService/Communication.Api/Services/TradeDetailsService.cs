@@ -13,7 +13,9 @@ namespace Communications.Api.Services
         private readonly IHttpClientFactory _httpClientFactory;
 
 
-        public TradeDetailsService(ILogger<TradeDetailsService> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public TradeDetailsService(ILogger<TradeDetailsService> logger,
+            IConfiguration configuration,
+            IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _configuration = configuration;
@@ -21,28 +23,18 @@ namespace Communications.Api.Services
         }
         public async Task<TradeDTO> GetTradeById(Guid TradeId)
         {
-            try
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_configuration["TradeApiURI"]}/api/trade/{TradeId}");
+            if (response.IsSuccessStatusCode)
             {
-                var client = _httpClientFactory.CreateClient();
-                client.BaseAddress=new Uri(_configuration.GetValue<string>("TradeApiURI"));
-                var response = await client.GetAsync(string.Format("/api/trade/{0}", TradeId));
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    if (result != null)
-                    {
-                        var jsonString = await response.Content.ReadAsStringAsync();
-                        return JsonConvert.DeserializeObject<TradeDTO>(jsonString);
-                    }
-                }
-                throw new NotFoundException(nameof(Services), TradeId);
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TradeDTO>(content);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(message: $"Error while Getting TradeById : {TradeId}, error : {ex.Message}");
-                throw;
+                throw new Exception($"Error in GetTradeById for TradeId: {TradeId}" +
+                    $", statuscode {response.StatusCode}");
             }
-
         }
     }
 }
