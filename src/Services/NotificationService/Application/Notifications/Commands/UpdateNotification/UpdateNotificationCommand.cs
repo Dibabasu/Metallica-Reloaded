@@ -34,9 +34,9 @@ namespace Notifications.Application.Notifications.Commands.UpdateNotification
                 throw new NotFoundException(nameof(Notifications), request.Id);
             }
 
-            entity.EmailStatus = request.EmailStatus;
-            entity.SMSStatus = request.SMSStatus;
-            entity.EmailRetries = request.NumberOfRetries;
+            entity.EmailStatus = request.EmailStatus == 0 ? entity.EmailStatus : request.EmailStatus;
+            entity.SMSStatus = request.SMSStatus ==0 ? entity.SMSStatus : request.SMSStatus;
+            entity.EmailRetries = request.NumberOfRetries == -1 ? entity.EmailRetries : request.NumberOfRetries;
             if (entity.EmailStatus == NotificaitonStatus.Sent)
             {
                 entity.SentDate = DateTime.UtcNow;

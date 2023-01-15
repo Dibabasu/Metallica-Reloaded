@@ -8,10 +8,6 @@ namespace Notifications.Application.Notifications.Commands.UpdateNotification
         {
             RuleFor(v => v.Id)
             .NotEmpty();
-            RuleFor(v => v.SMSStatus)
-                .NotNull();
-            RuleFor(v => v.EmailStatus)
-                .NotNull();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Communications.Api.Consumers
                 var data = context.Message;
                 _logger.LogInformation(message: context.Message.NotificationId.ToString());
 
-                NotificationDetail notification = new()
+                NotificationDetailDTO notification = new()
                 {
                     NotificationId = data.NotificationId,
                     TradeId = data.TradeId
@@ -38,7 +38,7 @@ namespace Communications.Api.Consumers
 
                 var tradeDetails = await GetTradeDetails(data.TradeId);
 
-                var noticationStatusMessage = await SendNotifications(notification,tradeDetails);
+                var noticationStatusMessage = await SendNotifications(notification, tradeDetails);
 
                 await PublishNotificaitonStatus(noticationStatusMessage);
             }
@@ -48,7 +48,7 @@ namespace Communications.Api.Consumers
                 throw;
             }
         }
-        private async Task<NoticationStatusMessage> SendNotifications(NotificationDetail notificationDetail, TradeDTO tradeDetails)
+        private async Task<NoticationStatusMessage> SendNotifications(NotificationDetailDTO notificationDetail, TradeDTO tradeDetails)
         {
             var response = new NoticationStatusMessage();
             response.NotificaitonId = notificationDetail.NotificationId;
@@ -89,9 +89,10 @@ namespace Communications.Api.Consumers
                 var trade = await _tradeDetails.GetTradeById(TradeId);
                 return trade;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
+                _logger.LogError($"GetTradeDetails Id: {TradeId}, error - {ex.Message}");
                 throw;
             }
             
