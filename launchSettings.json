@@ -4,16 +4,15 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "communications.api": "StartDebugging",
-        "envoygateway": "StartWithoutDebugging",
-        "identity.api": "StartDebugging",
-        "marketdata.api": "StartDebugging",
-        "notifications.api": "StartDebugging",
+        "trades-api": "StartDebugging",
+        "refdata-api": "StartDebugging",
+        "notifications-api": "StartDebugging",
+        "marketdata-api": "StartDebugging",
         "rabbitmq": "StartWithoutDebugging",
         "redis": "StartWithoutDebugging",
-        "refdata.api": "StartDebugging",
+        "identity-api": "StartDebugging",
         "sqlserver": "StartWithoutDebugging",
-        "trades.api": "StartDebugging"
+        "communications-api": "StartDebugging"
       }
     }
   }

@@ -36,7 +36,7 @@ namespace Communications.Api
                 }));
             });
 
-            services.AddHttpClient();
+            services.AddHttpClient<CommunicationHttpClient>();
             
             services.AddScoped<ICommuncations, CommunicationsService>();
             services.AddScoped<ITradeDetails, TradeDetailsService>();
