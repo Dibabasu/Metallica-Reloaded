@@ -2,11 +2,8 @@
 using Communications.Api.Model;
 using Communications.Api.Model.Common;
 using Communications.Api.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Retry;
-using System.Net.Http;
 
 namespace Communications.Api.Services
 {
@@ -17,9 +14,8 @@ namespace Communications.Api.Services
         private static Random _random = new Random();
         private const int MaxRetries = 3;
        
-        public CommunicationsService(ILogger<CommunicationsService> logger, 
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
+        public CommunicationsService(ILogger<CommunicationsService> logger
+            )
         {
             _logger = logger;
             _retryPolicy = Policy.Handle<Exception>().RetryAsync(MaxRetries);
@@ -99,9 +95,6 @@ namespace Communications.Api.Services
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(tradeDetails);
         }
-
-       
-
        
     }
 }

@@ -42,17 +42,16 @@ services:
       - ./src/BuildingBlocks/Envoy/https.crt:/etc/ssl/certs/https.crt
       - ./src/BuildingBlocks/Envoy/key.pem:/etc/ssl/certs/key.pem
 
-  communications.api:
+  communications-api:
     image: ${DOCKER_REGISTRY-}communicationsapi
     depends_on:
      - "rabbitmq"
-     - "trades.api"
     build:
       context: .
       dockerfile: src/Services/CommunicationService/Communication.Api/Dockerfile
 
 
-  trades.api:
+  trades-api:
     image: ${DOCKER_REGISTRY-}tradesapi
     depends_on:
      - "sqlserver"
@@ -61,7 +60,7 @@ services:
       dockerfile: src/Services/TradeService/Api/Dockerfile
 
 
-  refdata.api:
+  refdata-api:
     image: ${DOCKER_REGISTRY-}refdataapi
     build:
       context: .
@@ -69,7 +68,7 @@ services:
 
 
 
-  notifications.api:
+  notifications-api:
     image: ${DOCKER_REGISTRY-}notificationsapi
     depends_on:
      - "sqlserver"
@@ -80,7 +79,7 @@ services:
 
 
 
-  marketdata.api:
+  marketdata-api:
     image: ${DOCKER_REGISTRY-}marketdataapi
     depends_on:
       - "redis"
@@ -90,7 +89,7 @@ services:
 
 
 
-  identity.api:
+  identity-api:
     image: ${DOCKER_REGISTRY-}identityapi
     depends_on:
      - "sqlserver"

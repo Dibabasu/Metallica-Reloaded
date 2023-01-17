@@ -42,14 +42,13 @@ namespace Notifications.Test.Notifications.Command
         [Test]
         public void Handle_ShouldThrowNotFoundException_WhenNotificationNotExist()
         {
-            IQueryable<TradeNotification> data = MockNotificaitonData.MockTradeNotificationsData();
+            IQueryable<Notification> data = MockNotificaitonData.MockNotificationsData();
             // Arrange
-            var command = new DeleteNotificationCommand { Id = Guid.NewGuid() };
-        _context.Setup(x => x.Notifications.FindAsync(command.Id, CancellationToken.None))
-                .ReturnsAsync((Notification)null);
+            var command = new DeleteNotificationCommand { Id = new Guid("4936775b-b411-4b9a-9384-9be8278b7bd2") };
+            _context.Setup(c => c.Notifications).Returns(data.AsQueryable().BuildMockDbSet().Object);
 
-        // Act & Assert
-        Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
+            // Act & Assert
+            Assert.ThrowsAsync<NotFoundException>(() => _handler.Handle(command, CancellationToken.None));
         }
     }
 }

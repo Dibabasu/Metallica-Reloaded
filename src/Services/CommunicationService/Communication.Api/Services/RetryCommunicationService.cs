@@ -1,8 +1,12 @@
 ﻿using Communications.Api.Consumers;
+using Communications.Api.Exceptions;
 using Communications.Api.Model;
+using Communications.Api.Model.Common;
 using Communications.Api.Publisher.Interfaces;
 using Communications.Api.Services.Interfaces;
 using EventBus.RabbitMQ.Notifications.Communications;
+using MassTransit;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
 
@@ -14,21 +18,23 @@ namespace Communications.Api.Services
         private readonly ICommuncations _communcationsService;
         private IPublisherService _publisherService;
         private ITradeDetails _tradeDetails;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly CommunicationHttpClient _httpclient;
         private readonly IConfiguration _configuration;
+
+        
         public RetryCommunicationService(ILogger<NotificationConsumer> logger,
            ICommuncations iCommuncations,
            IPublisherService publisherService,
            ITradeDetails tradeDetails,
            IConfiguration configuration,
-           IHttpClientFactory httpClientFactory
+           CommunicationHttpClient httpClientFactory
            )
         {
             _logger = logger;
             _communcationsService = iCommuncations;
             _publisherService = publisherService;
             _tradeDetails = tradeDetails;
-            _httpClientFactory = httpClientFactory;
+            _httpclient = httpClientFactory;
             _configuration = configuration;
         }
         public async Task<EmailResponse> RetryEmail(Guid notificationId)
@@ -53,9 +59,9 @@ namespace Communications.Api.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while RetryEmail for notificationId: {notificationId}" +
-                    $", exception {ex.Message}");
-                throw;
+                _logger.LogError($"Retry email failed for notificationId : {notificationId}" +
+                     $", exception {ex.Message}");
+                throw new Exception($"Retry email failed for notificationId : {notificationId}");
 
             }
         }
@@ -81,27 +87,18 @@ namespace Communications.Api.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while RetryEmail for notificationId: {notificationId}" +
+                _logger.LogError($"Retry SMS failed for notificationId : {notificationId}" +
                     $", exception {ex.Message}");
-                throw;
-
+                throw new Exception($"Retry SMS failed for notificationId : {notificationId}");
             }
         }
 
         private async Task<NotificationDetailDTO> GetNotificationDetail(Guid notificationId)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["NotificationServiceUrl"]}/api/notification/{notificationId}");
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<NotificationDetailDTO>(content);
-            }
-            else
-            {
-                throw new Exception($"Error while getting notification details for notificationId: {notificationId}" +
-                    $", statuscode {response.StatusCode}");
-            }
+            return await _httpclient.GetAsync<NotificationDetailDTO>(
+                   url: $"{_configuration[Utility.NotificationServiceUrl]}{Utility.NotificationById}",
+                   id: notificationId
+                   );
         }
     }
 }
