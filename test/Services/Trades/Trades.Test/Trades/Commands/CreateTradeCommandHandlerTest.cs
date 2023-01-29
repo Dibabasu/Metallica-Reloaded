@@ -39,13 +39,12 @@ namespace Trades.Test.Trades.Commands
                 Side = (Domain.Common.Side)2
             };
             TradesMessage notificationMessage = It.IsAny<TradesMessage>();
-            var handler = new CreateTradeCommandHandler(_mockTradeRepo.Object, _mockIPublishTrade.Object);
+            var handler = new CreateTradeCommandHandler(_mockTradeRepo.Object);
 
             var result = await handler.Handle(command, default);
 
             mockSet.Verify(m => m.Add(It.IsAny<Trade>()), Times.Once());
             _mockTradeRepo.Verify(m => m.SaveChangesAsync(default), Times.Once());
-            _mockIPublishTrade.Verify(m=>m.CreatePublishTrade(It.IsAny<TradesMessage>()), Times.Once());
         }
         [Test]
         public async Task Handle_ShouldRequireMinimumFields()

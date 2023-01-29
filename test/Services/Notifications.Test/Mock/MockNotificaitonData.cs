@@ -28,7 +28,7 @@ namespace Notifications.Test.Mock
                 },
                 new Notification {
                 TradeId=new Guid("3caf131b-5393-4e09-b6ec-5fc8cd559574"),
-                SMSStatus=NotificaitonStatus.Enqueue,
+                SMSStatus=NotificaitonStatus. Failed,
                 EmailStatus=NotificaitonStatus.Failed,
                 EmailRetries=3,
                 SentDate=DateTime.Now,

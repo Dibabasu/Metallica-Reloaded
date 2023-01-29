@@ -4,8 +4,7 @@
     {
         Sent =1,
         Pending =2,
-        Enqueue=3,
-        Failed=4,
+        Failed = 3,
     }
     public enum Side
     {

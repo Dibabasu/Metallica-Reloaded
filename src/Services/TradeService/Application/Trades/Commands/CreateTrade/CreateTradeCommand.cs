@@ -1,10 +1,9 @@
-﻿using EventBus.RabbitMQ.Notifications.Communications;
-using EventBus.RabbitMQ.Trades.Notificaitons;
-using MediatR;
+﻿using MediatR;
 using Trades.Application.Common.Interfaces;
 using Trades.Application.PublishTrades.Interfaces;
 using Trades.Domain.Common;
 using Trades.Domain.Entity;
+using Trades.Domain.Events;
 
 namespace Trades.Application.Trades.Commands.CreateTrade
 {
@@ -20,11 +19,9 @@ namespace Trades.Application.Trades.Commands.CreateTrade
     public class CreateTradeCommandHandler : IRequestHandler<CreateTradeCommand, Guid>
     {
         private readonly ITradeApplicationDbContext _context;
-        private readonly IPublishTrade _publishTrade;
-        public CreateTradeCommandHandler(ITradeApplicationDbContext context, IPublishTrade publishTrade)
+        public CreateTradeCommandHandler(ITradeApplicationDbContext context)
         {
             _context = context;
-            _publishTrade = publishTrade;
         }
         public async Task<Guid> Handle(CreateTradeCommand request, CancellationToken cancellationToken)
         {
@@ -42,12 +39,11 @@ namespace Trades.Application.Trades.Commands.CreateTrade
             };
             _context.Trades.Add(entity);
 
+            entity.AddDomainEvent(new TradeCreatedEvent(entity));
+
             await _context.SaveChangesAsync(cancellationToken);
 
-            await _publishTrade.CreatePublishTrade(new TradesMessage
-            {
-                TradeId = entity.Id
-            });
+
 
             return entity.Id;
         }
