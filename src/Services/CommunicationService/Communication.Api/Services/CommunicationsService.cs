@@ -26,13 +26,12 @@ namespace Communications.Api.Services
             int retrycount = 0;
             try
             {
-                return await _retryPolicy.ExecuteAsync(async () =>
+                return await _retryPolicy.ExecuteAsync(() =>
                 {
                     retrycount += 1;
                     Random random = new Random();
                     if (random.Next(1, 10) > 2)
                     {
-
                         throw new EmailException();
                     }
 
@@ -40,12 +39,12 @@ namespace Communications.Api.Services
                         $"and Trade Id : {notificationDetail.TradeId} " +
                         $"with TradeDetails : {GetStringTradeDetail(trade)} ");
 
-                    return new EmailResponse
+                    return Task.FromResult(new EmailResponse
                     {
                         EmailSentAt = DateTime.UtcNow,
                         Retries = retrycount,
                         Status = NotificaitonStatus.Sent
-                    };
+                    });
 
                 });
             }

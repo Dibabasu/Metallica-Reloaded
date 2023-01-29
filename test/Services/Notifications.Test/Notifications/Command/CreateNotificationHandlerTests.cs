@@ -17,14 +17,12 @@ namespace Notifications.Test.Notifications.Command
     internal class CreateNotificationHandlerTests
     {
         private Mock<INotificationsDbContext> _context;
-        private Mock<IPublishNotification> _publishNotification;
         private Mock<IMediator> _mediator;
 
         [SetUp]
         public void Setup()
         {
             _context = new Mock<INotificationsDbContext>();
-            _publishNotification = new Mock<IPublishNotification>();
             _mediator = new Mock<IMediator>();
         }
         [Test]
@@ -38,7 +36,7 @@ namespace Notifications.Test.Notifications.Command
                 TradeId = new Guid("c815c4d8-14b3-480e-81da-846f60a95aed")
             };
 
-            var service = new CreateNotificaitonHandler(_context.Object, _mediator.Object, _publishNotification.Object);
+            var service = new CreateNotificaitonHandler(_context.Object);
 
             Assert.That(() => service.Handle(request, default),
                 Throws.InstanceOf<NotFoundException>());
@@ -49,7 +47,7 @@ namespace Notifications.Test.Notifications.Command
             IQueryable<Notification> ndata = MockNotificaitonData.MockNotificationsData();
             IQueryable<TradeNotification> tdata = MockNotificaitonData.MockTradeNotificationsData();
             // Arrange
-            var handler = new CreateNotificaitonHandler(_context.Object, _mediator.Object, _publishNotification.Object);
+            var handler = new CreateNotificaitonHandler(_context.Object);
 
 
             _context.Setup(c => c.Notifications).Returns(ndata.AsQueryable().BuildMockDbSet().Object);
@@ -65,9 +63,6 @@ namespace Notifications.Test.Notifications.Command
 
             // Assert
             _context.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once());
-            _publishNotification.Verify(x => x.CreateNotificaiton(It.Is<NotificationMessage>(m => m.NotificationId == result && m.TradeId == request.TradeId)), Times.Once());
-            _mediator.Verify(x => x.Send(It.Is<UpdateNotificationCommand>(c => c.Id == result && c.EmailStatus == NotificaitonStatus.Enqueue && c.SMSStatus == NotificaitonStatus.Enqueue), CancellationToken.None), Times.Once());
-
         }
         [Test]
         public void Handle_DuplicateTradeFound_ShouldThrowDuplicateTradeException()
@@ -75,7 +70,7 @@ namespace Notifications.Test.Notifications.Command
             IQueryable<Notification> ndata = MockNotificaitonData.MockNotificationsData();
             IQueryable<TradeNotification> tdata = MockNotificaitonData.MockTradeNotificationsData();
             // Arrange
-            var handler = new CreateNotificaitonHandler(_context.Object, _mediator.Object, _publishNotification.Object);
+            var handler = new CreateNotificaitonHandler(_context.Object);
 
 
             _context.Setup(c => c.Notifications).Returns(ndata.AsQueryable().BuildMockDbSet().Object);
@@ -87,7 +82,7 @@ namespace Notifications.Test.Notifications.Command
             };
 
 
-            var service = new CreateNotificaitonHandler(_context.Object, _mediator.Object, _publishNotification.Object);
+            var service = new CreateNotificaitonHandler(_context.Object);
 
             Assert.That(() => service.Handle(request, default),
                 Throws.InstanceOf<DuplicateFoundException>());

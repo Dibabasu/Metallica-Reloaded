@@ -7,6 +7,7 @@ using Notifications.Application.Notifications.Commands.UpdateNotification;
 using Notifications.Application.PublishCommuncaitons.Interfaces;
 using Notifications.Domain.Common;
 using Notifications.Domain.Entity;
+using Notifications.Domain.Events;
 
 namespace Notifications.Application.Notifications.Commands.CreateNotification
 {
@@ -18,15 +19,11 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
     public class CreateNotificaitonHandler : IRequestHandler<CreateNotificaitonCommand, Guid>
     {
         private readonly INotificationsDbContext _context;
-        private readonly IPublishNotification _publishNotification;
-        private readonly IMediator _mediator;
 
-
-        public CreateNotificaitonHandler(INotificationsDbContext context, IMediator mediator, IPublishNotification publishNotification)
+        public CreateNotificaitonHandler(INotificationsDbContext context)
         {
             _context = context;
-            _mediator = mediator;
-            _publishNotification = publishNotification;
+           
         }
         public async Task<Guid> Handle(CreateNotificaitonCommand request, CancellationToken cancellationToken)
         {
@@ -49,21 +46,9 @@ namespace Notifications.Application.Notifications.Commands.CreateNotification
             };
             _context.Notifications.Add(entity);
 
+            entity.AddDomainEvent(new NotificationCreatedEvent(entity));
+
             await _context.SaveChangesAsync(cancellationToken);
-
-            await _publishNotification.CreateNotificaiton(new NotificationMessage
-            {
-                NotificationId = entity.Id,
-                TradeId = request.TradeId
-            });
-
-            await _mediator.Send(new UpdateNotificationCommand
-            {
-                EmailStatus = NotificaitonStatus.Enqueue,
-                SMSStatus = NotificaitonStatus.Enqueue,
-                Id = entity.Id
-
-            }, cancellationToken);
 
             return entity.Id;
         }

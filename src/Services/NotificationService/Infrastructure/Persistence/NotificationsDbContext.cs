@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Notifications.Application.Common.Interfaces;
 using Notifications.Domain.Entity;
 using Notifications.Infrastructure.Persistence.Interceptors;
@@ -8,6 +9,7 @@ namespace Notifications.Infrastructure.Persistence
 {
     public class NotificationsDbContext : DbContext, INotificationsDbContext
     {
+        private readonly IMediator _mediator;
         public DbSet<Notification> Notifications => Set<Notification>();
 
         public DbSet<TradeNotification> TradeNotifications => Set<TradeNotification>();
@@ -16,10 +18,12 @@ namespace Notifications.Infrastructure.Persistence
 
         public NotificationsDbContext(
             DbContextOptions<NotificationsDbContext> options,
-            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
+            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+            IMediator mediator)
             : base(options)
         {
             _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+            _mediator = mediator;
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +38,7 @@ namespace Notifications.Infrastructure.Persistence
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            await _mediator.DispatchDomainEvents(this);
             return await base.SaveChangesAsync(cancellationToken);
         }
 

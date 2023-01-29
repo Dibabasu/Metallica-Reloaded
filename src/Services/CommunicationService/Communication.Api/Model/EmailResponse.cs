@@ -6,7 +6,6 @@ namespace Communications.Api.Model
     {
         public NotificaitonStatus Status { get; set; }
         public int Retries { get; set; }
-
         public DateTime EmailSentAt { get; set; }
 
     }
